@@ -32,4 +32,41 @@ public class BookingRepo {
         return bookings;
     }
 
+
+    public List<Booking> findByName(String name){
+        List<Booking> bookings = new ArrayList<Booking>();
+
+        SqlRowSet rs = null;
+        //This approach allows for wildcards in the name
+        // rs =  jdbcTemplate.queryForRowSet(SELECT_RSVP_BY_NAME, new Object[]{"%"+name+ "%"});
+        rs =  jdbcTemplate.queryForRowSet(SELECT_BOOKING_BY_NAME, "%"+name+"%");
+        
+        //this approach doesn't allow for wildcards
+        // rs =  jdbcTemplate.queryForRowSet(SELECT_RSVP_BY_NAME, name);
+
+        while(rs.next()){
+            bookings.add(Booking.create(rs));
+        }
+        return bookings;
+
+    }
+
+    public List<Booking> findByEmail(String email){
+        List<Booking> bookings = new ArrayList<Booking>();
+
+        SqlRowSet rs = null;
+        //This approach allows for wildcards in the name
+        // rs =  jdbcTemplate.queryForRowSet(SELECT_RSVP_BY_NAME, new Object[]{"%"+name+ "%"});
+        rs =  jdbcTemplate.queryForRowSet(SELECT_BOOKING_BY_EMAIL, email);
+        
+        //this approach doesn't allow for wildcards
+        // rs =  jdbcTemplate.queryForRowSet(SELECT_RSVP_BY_NAME, name);
+
+        while(rs.next()){
+            bookings.add(Booking.create(rs));
+        }
+        return bookings;
+
+    }
+
 }

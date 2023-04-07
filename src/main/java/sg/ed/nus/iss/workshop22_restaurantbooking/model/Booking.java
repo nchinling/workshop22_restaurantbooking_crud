@@ -99,7 +99,6 @@ public class Booking {
 
     public static Booking create(SqlRowSet rs){
         Booking booking = new Booking();
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
         booking.setId(rs.getInt("id"));
         booking.setName(rs.getString("name"));

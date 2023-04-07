@@ -18,4 +18,13 @@ public class BookingService {
     public List<Booking> findAll(int offset, int limit) throws IOException{
         return bookingrepo.findAll(offset, limit);
     }
+
+    public List<Booking> findByName(final String name){
+        return bookingrepo.findByName(name);
+    }  
+
+    public List<Booking> findByEmail(final String email){
+        return bookingrepo.findByEmail(email);
+    }  
+
 }

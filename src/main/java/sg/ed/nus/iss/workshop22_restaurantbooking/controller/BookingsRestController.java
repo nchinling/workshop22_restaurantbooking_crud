@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import sg.ed.nus.iss.workshop22_restaurantbooking.model.Booking;
 import sg.ed.nus.iss.workshop22_restaurantbooking.service.BookingService;
 
 @RestController
-@RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/restaurant", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BookingsRestController {
     
     @Autowired
@@ -47,6 +49,110 @@ public class BookingsRestController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(result.toString());
         
+    }
+
+
+    @GetMapping("/namebooking")
+    public ResponseEntity<String> getBookingByName(@RequestParam String q){
+        
+        List<Booking> bookings = bookingsvc.findByName(q);
+
+        //array is used as there might be more than one of each name..
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
+        for (Booking b : bookings){
+            arrayBuilder.add(b.toJson());
+        }
+
+        JsonArray result = arrayBuilder.build();
+
+        if (bookings.isEmpty())
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{error_msg: record for booking "+ q +" not found :)}");
+                    // .body("{'error_code' : " + HttpStatus.NOT_FOUND+"'}");
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(result.toString());
         
     }
+
+        
+        // JsonObject result;
+        // try{
+        //     Booking booking = bookingsvc.findByName(name); 
+          
+        //     JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+        //     objectBuilder.add("booking", booking.toJson());
+        //     result = objectBuilder.build();
+        // } catch(Exception e){
+        //     return ResponseEntity
+        //         .status(HttpStatus.NOT_FOUND)
+        //         .contentType(MediaType.APPLICATION_JSON)
+        //         .body("{error msg : record for booking " + name + " not found}");
+        // }
+
+        // return ResponseEntity
+        // .status(HttpStatus.OK)
+        // .contentType(MediaType.APPLICATION_JSON)
+        // .body(result.toString());
+
+            
+        // JsonObject result;
+        // try{
+        //     Booking booking = bookingsvc.findByName(name); 
+          
+        //     JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+        //     objectBuilder.add("booking", booking.toJson());
+        //     result = objectBuilder.build();
+        // } catch(Exception e){
+        //     return ResponseEntity
+        //         .status(HttpStatus.NOT_FOUND)
+        //         .contentType(MediaType.APPLICATION_JSON)
+        //         .body("{error msg : record for booking " + name + " not found}");
+        // }
+
+        // return ResponseEntity
+        // .status(HttpStatus.OK)
+        // .contentType(MediaType.APPLICATION_JSON)
+        // .body(result.toString());
+    
+        @GetMapping("/emailbooking")
+        public ResponseEntity<String> getBookingByEmail(@RequestParam String q){
+            
+            List<Booking> bookings = bookingsvc.findByEmail(q);
+    
+            //array is used as there might be more than one of each name..
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+    
+            for (Booking b : bookings){
+                arrayBuilder.add(b.toJson());
+            }
+    
+            JsonArray result = arrayBuilder.build();
+    
+            if (bookings.isEmpty())
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("{error_msg: record for booking "+ q +" not found :)}");
+                        // .body("{'error_code' : " + HttpStatus.NOT_FOUND+"'}");
+    
+    
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(result.toString());
+            
+        }
+        
+
+    
+
+
+
 }
