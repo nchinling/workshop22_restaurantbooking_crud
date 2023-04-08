@@ -35,4 +35,8 @@ public class BookingService {
         return bookingrepo.updateBooking(booking, email);
     } 
 
+    public Integer countBooking(){
+        return bookingrepo.countBooking();
+    } 
+
 }

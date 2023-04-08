@@ -122,6 +122,21 @@ public class BookingRepo {
             return booking;
         
     }
+
+
+    public Integer countBooking(){
+        int counter = 0;
+
+        SqlRowSet rs = null;
+        rs =  jdbcTemplate.queryForRowSet(GET_BOOKING_COUNT);
+        
+        while(rs.next()){
+            counter = rs.getInt(1);
+        }
+
+        System.out.println(">>>>>>>: " + counter);
+        return counter;
+    }
     
 
 }

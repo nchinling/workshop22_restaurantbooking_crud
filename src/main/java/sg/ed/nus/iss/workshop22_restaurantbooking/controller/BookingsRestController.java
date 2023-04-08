@@ -240,38 +240,25 @@ public class BookingsRestController {
 
     @GetMapping("/countbooking")
     public ResponseEntity<String> countBooking(){
-        
-        List<Booking> bookings = bookingsvc.findByName(q);
+        int counter = 0;
+        counter = bookingsvc.countBooking();
 
-        //array is used as there might be more than one of each name..
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-
-        for (Booking b : bookings){
-            arrayBuilder.add(b.toJson());
-        }
-
-        JsonArray result = arrayBuilder.build();
-
-        if (bookings.isEmpty())
+        if (counter == 0)
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
+                    .status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body("{error_msg: record for booking "+ q +" not found :)}");
+                    .body("{Status: There are currently no bookings}");
                     // .body("{'error_code' : " + HttpStatus.NOT_FOUND+"'}");
-
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(result.toString());
+                .body("{Status: There are " + counter + " bookings}");
+
+
+                // .body("{error_msg: record for booking "+ q +" not found :)}");
         
     }
-
-
-        
-
-    
-
 
 
 }
