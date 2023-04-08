@@ -1,11 +1,16 @@
 package sg.ed.nus.iss.workshop22_restaurantbooking.model;
 
+import java.io.ByteArrayInputStream;
+
 import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import jakarta.json.JsonValue;
 
 public class Booking {
@@ -112,7 +117,6 @@ public class Booking {
         return booking;
     }
 
-
     public JsonValue toJson(){
         DateTimeFormatter formatter = DateTimeFormat.forPattern(" 'Date:' yyyy-MM-dd 'Time:' HH:mm:ss");
         return Json.createObjectBuilder()
@@ -124,6 +128,34 @@ public class Booking {
             .add("Reservation", formatter.print(getReservationDate()))
             .add("Comments", getComments())
             .build();
+    }
+
+
+    public static Booking create(String json) {
+
+        //The method first creates an instance of JsonReader by passing a 
+        //new ByteArrayInputStream object that is initialized with the bytes of 
+        //the json string. This is done to read the JSON data in the json string.
+        JsonReader reader = Json.createReader(new ByteArrayInputStream(json.getBytes()));
+        
+        //create Booking object from JsonObject.
+        return create(reader.readObject());
+    }
+
+
+    public static Booking create(JsonObject readObject){
+        Booking booking = new Booking();
+
+        // booking.setId(readObject.getInt("id"));
+        booking.setName(readObject.getString("name"));
+        booking.setEmail(readObject.getString("email_address"));
+        booking.setPhone(readObject.getString("phone_number"));
+        // booking.setReservationDate(new DateTime(DateTime.parse(rs.getString("reservation_date")))); 
+        booking.setReservationDate(new DateTime(Instant.parse(readObject.getString("reservation_date"))));
+       
+        booking.setComments(readObject.getString("comments"));
+     
+        return booking;
     }
 
  

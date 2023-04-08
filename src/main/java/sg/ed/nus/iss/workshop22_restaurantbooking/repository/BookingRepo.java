@@ -1,10 +1,17 @@
 package sg.ed.nus.iss.workshop22_restaurantbooking.repository;
 
+import java.math.BigInteger;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
@@ -68,5 +75,53 @@ public class BookingRepo {
         return bookings;
 
     }
+
+
+    public Booking createBooking(Booking booking){
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        // Booking existingbooking = getBookingByEmail(booking.getEmail());
+        
+            //insert record
+            jdbcTemplate.update(connection -> {
+                PreparedStatement statement = connection.prepareStatement(INSERT_NEW_BOOKING, Statement.RETURN_GENERATED_KEYS);
+    
+                //name,email_address,phone_number,reservation_date,comments
+                statement.setString(1, booking.getName());
+                statement.setString(2, booking.getEmail());
+                statement.setString(3,booking.getPhone());
+        
+                statement.setTimestamp(4, new Timestamp(booking.getReservationDate().toDateTime().getMillis()));
+                statement.setString(5, booking.getComments());
+                return statement;
+            }, keyHolder);
+    
+            BigInteger primaryKey = (BigInteger) keyHolder.getKey();
+    
+            booking.setId(primaryKey.intValue());
+
+            return booking;
+        
+    }
+
+    public Booking updateBooking(Booking booking, String email){
+
+            //update record
+            jdbcTemplate.update(connection -> {
+                PreparedStatement statement = connection.prepareStatement(UPDATE_BOOKING_BY_EMAIL);
+    
+                //name,email_address,phone_number,reservation_date,comments
+                statement.setString(1, booking.getName());
+                statement.setString(2,booking.getPhone());
+        
+                statement.setTimestamp(3, new Timestamp(booking.getReservationDate().toDateTime().getMillis()));
+                statement.setString(4, booking.getComments());
+                statement.setString(5, email);
+                return statement;
+            });
+
+            return booking;
+        
+    }
+    
 
 }

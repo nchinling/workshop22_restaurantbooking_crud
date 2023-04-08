@@ -25,6 +25,14 @@ public class BookingService {
 
     public List<Booking> findByEmail(final String email){
         return bookingrepo.findByEmail(email);
-    }  
+    }
+    
+    public Booking createBooking(Booking booking){
+        return bookingrepo.createBooking(booking);
+    } 
+
+    public Booking updateBooking(Booking booking, String email){
+        return bookingrepo.updateBooking(booking, email);
+    } 
 
 }
