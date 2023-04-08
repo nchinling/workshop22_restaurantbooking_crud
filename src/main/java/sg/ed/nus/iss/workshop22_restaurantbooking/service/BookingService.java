@@ -27,8 +27,8 @@ public class BookingService {
         return bookingrepo.findByEmail(email);
     }
     
-    public Booking createBooking(Booking booking){
-        return bookingrepo.createBooking(booking);
+    public Booking insertUpdateBooking(Booking booking){
+        return bookingrepo.insertUpdateBooking(booking);
     } 
 
     public Booking updateBooking(Booking booking, String email){

@@ -77,10 +77,13 @@ public class BookingRepo {
     }
 
 
-    public Booking createBooking(Booking booking){
+    public Booking insertUpdateBooking(Booking booking){
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        List<Booking> existingBookings = findByEmail(booking.getEmail());
         // Booking existingbooking = getBookingByEmail(booking.getEmail());
         
+        if(existingBookings.isEmpty()){
+    
             //insert record
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_NEW_BOOKING, Statement.RETURN_GENERATED_KEYS);
@@ -99,9 +102,38 @@ public class BookingRepo {
     
             booking.setId(primaryKey.intValue());
 
-            return booking;
+           
+        }
+
+        else{
+                //update existing record
+                Booking existingBooking = existingBookings.get(0);
+                existingBooking.setName(booking.getName());
+                existingBooking.setEmail(booking.getEmail());
+                existingBooking.setPhone(booking.getPhone());
+                existingBooking.setReservationDate(booking.getReservationDate());
+                existingBooking.setComments(booking.getComments());
+    
+                boolean isUpdated = updateBookingSuccess(existingBooking);
+                
+                if(isUpdated){
+                    booking.setId(existingBooking.getId());
+                }
+    
+        }
+    
+        return booking;
         
     }
+
+    private boolean updateBookingSuccess(Booking existingBooking) {
+        return jdbcTemplate.update(UPDATE_BOOKING_BY_EMAIL, 
+                existingBooking.getName(),    
+                existingBooking.getPhone(), 
+                new Timestamp(existingBooking.getReservationDate().toDateTime().getMillis()), 
+                existingBooking.getComments(),
+                existingBooking.getEmail())>0;
+        }
 
     public Booking updateBooking(Booking booking, String email){
 

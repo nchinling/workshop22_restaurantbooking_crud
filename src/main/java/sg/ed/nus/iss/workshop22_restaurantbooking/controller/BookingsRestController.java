@@ -163,7 +163,7 @@ public class BookingsRestController {
 
         //send a json object from postman
         booking= Booking.create(json); //converting json to java object
-        Booking bookingresult = bookingsvc.createBooking(booking);
+        Booking bookingresult = bookingsvc.insertUpdateBooking(booking);
 
         JsonObject jsonObject = Json.createObjectBuilder()
                                     .add("id", bookingresult.getId())
@@ -173,12 +173,8 @@ public class BookingsRestController {
         //     .contentType(MediaType.APPLICATION_JSON)
         //     .body(jsonObject.toString());
         
-        return (bookingresult == null)
-        ? ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body("{status: email not found}")
-        : ResponseEntity
+     
+        return ResponseEntity
             .status(HttpStatus.CREATED)
             .contentType(MediaType.APPLICATION_JSON)
             .body("{Booking: Successful}");
@@ -243,6 +239,11 @@ public class BookingsRestController {
         int counter = 0;
         counter = bookingsvc.countBooking();
 
+        JsonObject resp;
+        resp = Json.createObjectBuilder()
+        .add("total_count", counter)
+        .build();
+
         if (counter == 0)
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -251,9 +252,14 @@ public class BookingsRestController {
                     // .body("{'error_code' : " + HttpStatus.NOT_FOUND+"'}");
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body("{Status: There are " + counter + " bookings}");
+            .status(HttpStatus.CREATED)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(resp.toString()); 
+
+        // return ResponseEntity
+        //         .status(HttpStatus.OK)
+        //         .contentType(MediaType.APPLICATION_JSON)
+        //         .body("{Status: There are " + counter + " bookings}");
 
 
                 // .body("{error_msg: record for booking "+ q +" not found :)}");
